@@ -797,7 +797,6 @@ fn retryable_response_reason(status: reqwest::StatusCode, body: &str) -> Option<
 }
 
 fn feed_retry_delay(attempt: u32) -> std::time::Duration {
-    std::time::Duration::from_millis(1_500 * 2_u64.pow(attempt.saturating_sub(1)))
     let delay = std::time::Duration::from_millis(1_500 * 2_u64.pow(attempt.saturating_sub(1)));
     delay.min(std::time::Duration::from_secs(8))
 }
