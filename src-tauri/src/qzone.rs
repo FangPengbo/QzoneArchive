@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex};
 use crate::qlogin::QLoginState;
 
 const FEEDS_URL: &str = "https://mobile.qzone.qq.com/get_feeds";
-const FEED_RESPONSE_ATTEMPTS: u32 = 3;
+const FEED_RESPONSE_ATTEMPTS: u32 = 6;
 const RECYCLE_WINDOW_LABEL: &str = "qzone-recycle-auth";
 const RECYCLE_ALBUM_LIST_URL: &str =
     "https://user.qzone.qq.com/proxy/domain/photo.qzone.qq.com/cgi-bin/common/cgi_alist_recycle_v2";
@@ -798,6 +798,8 @@ fn retryable_response_reason(status: reqwest::StatusCode, body: &str) -> Option<
 
 fn feed_retry_delay(attempt: u32) -> std::time::Duration {
     std::time::Duration::from_millis(1_500 * 2_u64.pow(attempt.saturating_sub(1)))
+    let delay = std::time::Duration::from_millis(1_500 * 2_u64.pow(attempt.saturating_sub(1)));
+    delay.min(std::time::Duration::from_secs(8))
 }
 
 fn sec_ch_ua(user_agent: &str) -> String {
